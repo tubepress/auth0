@@ -50,7 +50,7 @@ function (user, context, callback) {
       // message to be displayed to the spammer
       errorMessage : 'Your email or IP address is not allowed. Please contact us for assistance.',
 
-      debug: true
+      debug: false
     },
 
     //*************************************************************************************************

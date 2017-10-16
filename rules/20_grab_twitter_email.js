@@ -2,8 +2,8 @@ function (user, context, callback) {
 
   var log = function (message) {
 
-      console.log('===> ' + context.sessionID + ' Twitter rule: ' + message);
-    };
+    console.log('===> ' + context.sessionID + ' Twitter rule: ' + message);
+  };
 
   if (context.connectionStrategy !== 'twitter') {
 
