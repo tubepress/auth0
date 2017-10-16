@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Sign in to TubePress</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+    <body>
+
+        <!--[if IE 8]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/ie8/0.2.5/ie8.js"></script>
+        <![endif]-->
+
+        <!--[if lte IE 9]>
+        <script src="https://cdn.auth0.com/js/base64.js"></script>
+        <script src="https://cdn.auth0.com/js/es5-shim.min.js"></script>
+        <![endif]-->
+
+        <script src="https://cdn.auth0.com/js/lock/10.23/lock.min.js"></script>
+        <script>
+
+          // Decode utf8 characters properly
+          var config = JSON.parse(decodeURIComponent(escape(window.atob('@@config@@'))));
+
+          config.extraParams = config.extraParams || {};
+
+          var loginHint = config.extraParams.email,
+            reqdMode = config.extraParams.mode,
+            finalMode = (reqdMode === 'reset') ? 'forgotPassword' : (reqdMode === 'register') ? 'signUp' : 'login',
+            finalConfig = {
+
+              //Auth0 stuff
+              auth: {
+                redirectUrl: config.callbackURL,
+                responseType: (config.internalOptions || {}).response_type || config.callbackOnLocationHash ? 'token' : 'code',
+                params: config.internalOptions
+              },
+              assetsUrl:  config.assetsUrl,
+              prefill: loginHint ? { email: loginHint, username: loginHint } : null,
+
+              // our stuff
+              allowAutoComplete: true,
+              closable: false,
+              languageDictionary: {
+                forgotPasswordAction: 'Forgot password?',
+                title: 'TubePress'
+              },
+              usernameStyle: 'email',
+              initialScreen: finalMode,
+              theme: {
+                logo: 'https://d20zf3qr0tri5h.cloudfront.net/logos/tubepress_logo_58x58.png'
+              }
+            };
+
+          new Auth0Lock(config.clientID, config.auth0Domain, finalConfig).show();
+        </script>
+    </body>
+</html>
