@@ -27,14 +27,17 @@
 
           var loginHint = config.extraParams.email,
             reqdMode = config.extraParams.mode,
-            finalMode = (reqdMode === 'reset') ? 'forgotPassword' : (reqdMode === 'register') ? 'signUp' : 'login',
+            finalMode = (reqdMode === 'reset-password') ? 'forgotPassword' : (reqdMode === 'create-account') ? 'signUp' : 'login',
             finalConfig = {
 
               //Auth0 stuff
               auth: {
                 redirectUrl: config.callbackURL,
                 responseType: (config.internalOptions || {}).response_type || config.callbackOnLocationHash ? 'token' : 'code',
-                params: config.internalOptions
+                params: config.internalOptions,
+
+                responseMode : 'form_post',
+                sso          : true
               },
               assetsUrl:  config.assetsUrl,
               prefill: loginHint ? { email: loginHint, username: loginHint } : null,
