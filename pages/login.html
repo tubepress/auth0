@@ -25,10 +25,10 @@
 
           config.extraParams = config.extraParams || {};
 
-          var loginHint = config.extraParams.email,
-            reqdMode = config.extraParams.mode,
-            finalMode = (reqdMode === 'reset-password') ? 'forgotPassword' : (reqdMode === 'create-account') ? 'signUp' : 'login',
-            finalConfig = {
+          var loginHint   = config.extraParams.email,
+            reqdAction    = config.extraParams.action,
+            initialScreen = (reqdAction === 'reset-password') ? 'forgotPassword' : (reqdAction === 'create-account') ? 'signUp' : 'login',
+            finalConfig   = {
 
               //Auth0 stuff
               auth: {
@@ -50,7 +50,7 @@
                 title: 'TubePress'
               },
               usernameStyle: 'email',
-              initialScreen: finalMode,
+              initialScreen: initialScreen,
               theme: {
                 logo: 'https://d20zf3qr0tri5h.cloudfront.net/logos/tubepress_logo_58x58.png'
               }
