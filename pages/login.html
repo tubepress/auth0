@@ -67,6 +67,11 @@
                     runtimeConfig.callbackOnLocationHash ? 'token' : 'code';
               },
 
+              buildParamResponseMode = function (runtimeConfig) {
+
+                return isDashboardClient(runtimeConfig) ? 'form_post' : null;
+              },
+
               buildParamPrefill = function (runtimeConfig) {
 
                 var loginHint = runtimeConfig.extraParams.email;
@@ -80,9 +85,10 @@
 
                     //Auth0 stuff
                     auth: {
-                      redirectUrl  : runtimeConfig.callbackURL,
-                      responseType : buildParamResponseType(runtimeConfig),
                       params       : runtimeConfig.internalOptions,
+                      responseMode : buildParamResponseMode(runtimeConfig),
+                      responseType : buildParamResponseType(runtimeConfig),
+                      redirectUrl  : runtimeConfig.callbackURL,
                       sso          : true
                     },
                     assetsUrl :  runtimeConfig.assetsUrl,
