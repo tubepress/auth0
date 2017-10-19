@@ -21,43 +21,100 @@
         <script src="https://cdn.auth0.com/js/lock/10.23/lock.min.js"></script>
         <script>
 
-          // Decode utf8 characters properly
-          var config = JSON.parse(decodeURIComponent(escape(window.atob('@@config@@'))));
+          (function () {
 
-          config.extraParams = config.extraParams || {};
+            var getRuntimeConfig = function () {
 
-          var loginHint   = config.extraParams.email,
-            reqdAction    = config.extraParams.action,
-            initialScreen = (reqdAction === 'reset-password') ? 'forgotPassword' : (reqdAction === 'create-account') ? 'signUp' : 'login',
-            finalConfig   = {
+              // Decode utf8 characters properly
+              var config = JSON.parse(decodeURIComponent(escape(window.atob('@@config@@'))));
 
-              //Auth0 stuff
-              auth: {
-                redirectUrl: config.callbackURL,
-                responseType: (config.internalOptions || {}).response_type || config.callbackOnLocationHash ? 'token' : 'code',
-                params: config.internalOptions,
+              config.extraParams = config.extraParams || {};
+              config.internalOptions = config.internalOptions || {};
 
-                responseMode : 'form_post',
-                sso          : true
+              return config;
+            },
+
+              isDashboardClient = function (runtimeConfig) {
+
+                return runtimeConfig.clientID === 'USJw34rpGM6w1xzsRHJ3YDXV4GyZDrwr';
               },
-              assetsUrl:  config.assetsUrl,
-              prefill: loginHint ? { email: loginHint, username: loginHint } : null,
 
-              // our stuff
-              allowAutoComplete: true,
-              closable: false,
-              languageDictionary: {
-                forgotPasswordAction: 'Forgot password?',
-                title: 'TubePress'
+              buildParamInitialScreen = function (runtimeConfig) {
+
+                var reqdAction  = runtimeConfig.extraParams.action;
+
+                if (reqdAction === 'reset-password') {
+
+                  return 'forgotPassword';
+                }
+
+                if (reqdAction === 'create-account') {
+
+                  return 'signUp';
+                }
+
+                return 'login';
               },
-              usernameStyle: 'email',
-              initialScreen: initialScreen,
-              theme: {
-                logo: 'https://d20zf3qr0tri5h.cloudfront.net/logos/tubepress_logo_58x58.png'
-              }
-            };
 
-          new Auth0Lock(config.clientID, config.auth0Domain, finalConfig).show();
+              buildParamResponseType = function (runtimeConfig) {
+
+                if (isDashboardClient(runtimeConfig)) {
+
+                  return 'id_token';
+                }
+
+                return runtimeConfig.internalOptions.response_type ||
+                    runtimeConfig.callbackOnLocationHash ? 'token' : 'code';
+              },
+
+              buildParamPrefill = function (runtimeConfig) {
+
+                var loginHint = runtimeConfig.extraParams.email;
+
+                return loginHint ? { email: loginHint, username: loginHint } : null;
+              },
+
+              buildLockConfig = function (runtimeConfig) {
+
+                  return {
+
+                    //Auth0 stuff
+                    auth: {
+                      redirectUrl  : runtimeConfig.callbackURL,
+                      responseType : buildParamResponseType(runtimeConfig),
+                      params       : runtimeConfig.internalOptions,
+                      sso          : true
+                    },
+                    assetsUrl :  runtimeConfig.assetsUrl,
+                    prefill   : buildParamPrefill(runtimeConfig),
+
+                    // our stuff
+                    allowAutoComplete  : true,
+                    closable           : false,
+                    languageDictionary : {
+                      forgotPasswordAction: 'Forgot password?',
+                      title: 'TubePress'
+                    },
+                    usernameStyle : 'email',
+                    initialScreen : buildParamInitialScreen(runtimeConfig),
+                    theme: {
+                      logo: 'https://d20zf3qr0tri5h.cloudfront.net/logos/tubepress_logo_58x58.png'
+                    }
+                  };
+              },
+
+              buildLock = function (runtimeConfig, lockConfig) {
+
+                return new Auth0Lock(runtimeConfig.clientID, runtimeConfig.auth0Domain, lockConfig)
+              };
+
+            var initialConfig = getRuntimeConfig(),
+              lockConfig      = buildLockConfig(initialConfig),
+              lock            = buildLock(initialConfig, lockConfig);
+
+            lock.show();
+          }());
+
         </script>
     </body>
 </html>
