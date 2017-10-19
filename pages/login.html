@@ -58,18 +58,8 @@
 
               buildParamResponseType = function (runtimeConfig) {
 
-                if (isDashboardClient(runtimeConfig)) {
-
-                  return 'id_token';
-                }
-
                 return runtimeConfig.internalOptions.response_type ||
                     runtimeConfig.callbackOnLocationHash ? 'token' : 'code';
-              },
-
-              buildParamResponseMode = function (runtimeConfig) {
-
-                return isDashboardClient(runtimeConfig) ? 'form_post' : null;
               },
 
               buildParamPrefill = function (runtimeConfig) {
@@ -83,10 +73,8 @@
 
                   return {
 
-                    //Auth0 stuff
                     auth: {
                       params       : runtimeConfig.internalOptions,
-                      //responseMode : buildParamResponseMode(runtimeConfig),
                       responseType : buildParamResponseType(runtimeConfig),
                       redirectUrl  : runtimeConfig.callbackURL,
                       sso          : true
